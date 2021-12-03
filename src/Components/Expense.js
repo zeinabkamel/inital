@@ -1,29 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import ExpenseItem from "./ExpenseItem";
 import Card from "./Card";
-// const ExpenseITemObject = [
-//   {
-//     date: new Date(2021, 12, 12).toDateString(),
-//     Title: "Car BMW",
-//     Price: 500000,
-//   },
-//   {
-//     date: new Date(2021, 11, 11).toDateString(),
-//     Title: "Car G2K",
-//     Price: 1000000,
-//   },
-// ];
-// const rended = ExpenseITemObject.map(function (item, i) {
-//   return <ExpenseItem key={i} expenseITemObject={item}></ExpenseItem>;
-// });
+import ExpensesFilter from "./ExpenseFilter";
 const Expenses = (props) => {
-  console.log("probfromExpense", props);
-  const rended = props.items.map(function (item, i) {
-    return <ExpenseItem key={i} expenseITemObject={item}></ExpenseItem>;
-  });
+  let expensedContentFilter = props.items;
+  const [filteredYear, setFilteredYear] = useState("2020");
+  const [filterdList, setFilterdList] = useState(props.items);
+  const HandlerOnApplySearch = (selectedyear) => {
+    debugger;
 
-  return <Card className="expenses">{rended}</Card>;
+    setFilteredYear(selectedyear);
+    let list = [];
+    if (selectedyear != null)
+      list = props.items.filter(
+        (ent) => new Date(ent.date).getFullYear() == selectedyear
+      );
+    else {
+      list = props.items;
+    }
+    setFilterdList(list);
+    console.log(setFilterdList);
+  };
+
+  return (
+    <Card className="expenses">
+      <ExpensesFilter
+        selected="2020"
+        searchTerm=""
+        onApplyFilter={HandlerOnApplySearch}
+      />
+      ;
+      {filterdList.length > 0 ? (
+        filterdList.map((expense, i) => (
+          <ExpenseItem key={i} expenseITemObject={expense} />
+        ))
+      ) : (
+        <p>No Filtered Data exist</p>
+      )}
+    </Card>
+  );
 };
 
 export default Expenses;
